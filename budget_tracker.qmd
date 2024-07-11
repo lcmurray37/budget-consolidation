@@ -1,0 +1,46 @@
+---
+title: "Budget Tracker"
+format: html
+editor: visual
+---
+
+# Introduction
+
+This is Quarto file enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>. This document describes how to read in budget data, wrangle the detail, and output it in a more desirable format.
+
+The data utilized to develop this Quarto document is sensitive, so please be aware that references to the data should remain relatively anonymous.
+
+# Initialize Project
+
+## Load packages & functions
+
+```{r}
+# packages for data manipulation
+library(dplyr)
+library(readxl)
+library(purrr)
+```
+
+## Set parameters
+
+```{r}
+dir_path <- paste0("/Users/", Sys.info()["user"], "/Software/Git Local/budget-consolidation/")
+eventfiles <- list.files("DATA", pattern="Events", full.names = TRUE)
+plfiles <- list.files("DATA", pattern="Profit-Loss", full.names = TRUE)
+```
+
+## Read data
+
+```{r}
+events <- map(eventfiles, read_xls)
+profit_loss <- map(plfiles, read_xls)
+```
+
+# Clean Data
+
+## Bind dataframes
+
+```{r}
+profit_loss_df <- bind_rows(profit_loss, .id = "column_label")
+events_df <- bind_rows(events, .id = "column_label")
+```
